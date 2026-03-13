@@ -46,10 +46,12 @@ public class LinkController {
             return ResponseEntity.ok(response);
         }
 
-        String code = service.generateCode();
-
         Links link = new Links();
+
+
         link.setOriginalUrl(url);
+        repository.save(link);
+        String code = service.generateCode(link.getId());
         link.setShortCode(code);
 
         UrlResponse urlResponse = new UrlResponse("http://localhost:8080/" + code, code);
