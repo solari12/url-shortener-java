@@ -66,9 +66,11 @@ public class LinkController {
 
         Links link = repository.findByShortCode(code);
 
+
         if (link == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Short link not found");
         }
+        service.increaseClick(link);
 
         return new RedirectView(link.getOriginalUrl());
     }

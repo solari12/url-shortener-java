@@ -1,6 +1,7 @@
 package com.example.shortlink.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
 public class Links {
@@ -11,6 +12,9 @@ public class Links {
     private String shortCode;
 
     private String originalUrl;
+
+    @Getter
+    private int clicks;
 
     public Long getId() {
         return id;
@@ -30,5 +34,9 @@ public class Links {
 
     public void setOriginalUrl(String originalUrl) {
         this.originalUrl = originalUrl;
+    }
+
+    public void increaseClick() {
+        this.clicks++;
     }
 }
