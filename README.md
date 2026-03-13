@@ -1,91 +1,98 @@
-URL Shortener - Spring Boot Project
+# URL Shortener (Java + Spring Boot)
 
-A simple URL Shortener Service built with:
+A simple URL Shortener service built with **Java**, **Spring Boot**, and **MySQL**.
+This project converts long URLs into short links and redirects users to the original URL.
 
-Java
+---
 
-Spring Boot
+# Features
 
-Spring Data JPA
+* Create short URLs
+* Redirect short link to original URL
+* Store links in MySQL database
+* RESTful API using Spring Boot
+* Simple backend architecture
 
-MySQL
+---
 
-The application converts long URLs into short codes and redirects users to the original URL.
+# Tech Stack
 
-Example:
+* Java
+* Spring Boot
+* Spring Data JPA
+* MySQL
+* Maven
 
-Long URL: https://google.com
-Short URL: http://localhost:8080/Ab3kL2
-Project Architecture
-Client (Browser / Postman)
-        |
-        v
+---
+
+# Architecture
+
+High-level architecture:
+
+Client
+↓
 Spring Boot Controller
-        |
-        v
+↓
 Service Layer
-        |
-        v
+↓
 Repository (Spring Data JPA)
-        |
-        v
+↓
 MySQL Database
-API Endpoints
-1. Create Short Link
 
-Endpoint
+---
 
-POST /shorten
+# API Endpoints
+
+## Create Short Link
+
+POST `/shorten`
 
 Request Body
 
+```json
 {
   "url": "https://google.com"
 }
+```
 
-Flow
+Response
 
-Controller receives request
+```
+http://localhost:8080/Ab3kL2
+```
 
-Extract URL from request body
+---
 
-Generate short code
+## Redirect to Original URL
 
-Save record to database
+GET `/{code}`
 
-Return short URL
+Example
 
-Example Database Record
+```
+http://localhost:8080/Ab3kL2
+```
 
-id	short_code	original_url
-1	Ab3kL2	https://google.com
-2. Redirect to Original URL
+The server will redirect to the original URL.
 
-Endpoint
+---
 
-GET /{code}
+# Database Schema
 
-Example request:
+Table: `links`
 
-GET /Ab3kL2
+| Column       | Type    | Description          |
+| ------------ | ------- | -------------------- |
+| id           | BIGINT  | Primary key          |
+| short_code   | VARCHAR | Generated short code |
+| original_url | VARCHAR | Original long URL    |
 
-Flow
+---
 
-Controller receives short code
+# Project Structure
 
-Repository searches database
-
-Retrieve original URL
-
-Return HTTP redirect response
-
-Browser opens the original URL
-
-Project Structure
-
-Typical Spring Boot project structure
-
-src/main/java/com/example/shortlink/
+```
+src/main/java/com/example/shortlink
 
 controller/
     LinkController.java
@@ -101,144 +108,60 @@ model/
     UrlRequest.java
 
 ShortlinkApplication.java
-Database Schema
+```
 
-Table: links
+---
 
-Field	Type	Description
-id	BIGINT	Primary key (auto increment)
-short_code	VARCHAR	Generated short code
-original_url	VARCHAR	Original long URL
-Optional Future Fields
-click_count INT
-created_at DATETIME
-expire_at DATETIME
-Key Components
-Controller
+# Run the Project
 
-Handles HTTP requests.
+1. Clone the repository
 
-Endpoints:
+```
+git clone https://github.com/YOUR_USERNAME/url-shortener-java.git
+```
 
-POST /shorten
-GET /{code}
-Service
+2. Configure database in `application.properties`
 
-Contains business logic:
+```
+spring.datasource.url=jdbc:mysql://localhost:3306/shortlink
+spring.datasource.username=root
+spring.datasource.password=YOUR_PASSWORD
+```
 
-Generate short code
+3. Run the application
 
-Validate URLs
+```
+mvn spring-boot:run
+```
 
-Handle redirect logic
+Server runs at:
 
-Future features (analytics, expiration)
+```
+http://localhost:8080
+```
 
-Repository
+---
 
-Spring Data JPA interface for database access.
+# Example Workflow
 
-Handles operations like:
+1. Send POST request to `/shorten`
+2. Server generates short code
+3. URL stored in database
+4. Access short URL
+5. Server redirects to original link
 
-save()
-findByShortCode()
-Entity
+---
 
-Maps Java objects to database tables.
+# Future Improvements
 
-Example:
+* Click analytics
+* Base62 short code generation
+* Redis caching
+* Link expiration
+* Rate limiting
 
-@Entity
-public class Link {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+---
 
-    private String shortCode;
-    private String originalUrl;
-}
-Debugging Strategy
+# Author
 
-Instead of using many print statements, use the IntelliJ Debugger.
-
-Steps
-
-Place breakpoint
-
-Run application in Debug mode
-
-Send request (Postman / curl)
-
-Inspect variables
-
-Important things to check:
-
-request.url
-generatedCode
-link object
-database save result
-Common Development Issues
-Using Browser for POST request
-
-Browsers only send GET requests by default.
-
-Solution:
-
-Use Postman or curl.
-
-Database mismatch
-
-Sometimes the application connects to a different database than MySQL Workbench.
-
-Check with:
-
-SELECT DATABASE();
-Missing annotations
-
-Common mistakes:
-
-@Entity
-@Id
-@GeneratedValue
-Possible Improvements
-
-Production features you can add:
-
-Click Analytics
-
-Track how many times a link is opened.
-
-click_count
-Base62 Short Code Generation
-
-Instead of random strings:
-
-id -> Base62 encoded string
-Redis Caching
-
-Speed up redirect performance.
-
-Link Expiration
-
-Allow links to expire after a certain time.
-
-Rate Limiting
-
-Prevent spam or abuse.
-
-Final Architecture Summary
-Client
-   |
-   v
-REST API (Spring Boot Controller)
-   |
-   v
-Business Logic (Service Layer)
-   |
-   v
-Data Access (Spring Data JPA Repository)
-   |
-   v
-Database (MySQL)
-
-This architecture follows a typical backend service pattern used in real-world Java applications.
+Built as a learning project for backend development with Java and Spring Boot.
