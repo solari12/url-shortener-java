@@ -2,10 +2,13 @@ package com.example.shortlink.controller;
 
 import com.example.shortlink.model.Links;
 import com.example.shortlink.model.UrlRequest;
+import com.example.shortlink.model.UrlResponse;
 import com.example.shortlink.repository.LinkRepository;
 import com.example.shortlink.service.LinkService;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -19,7 +22,7 @@ public class LinkController {
     private LinkService service;
 
     @PostMapping("/shorten")
-    public String shorten(@RequestBody UrlRequest request) {
+    public ResponseEntity<UrlResponse> shorten(@Valid @RequestBody UrlRequest request) {
 
         String url = request.getUrl();
 
@@ -33,9 +36,11 @@ public class LinkController {
         link.setOriginalUrl(url);
         link.setShortCode(code);
 
+        UrlResponse urlResponse = new UrlResponse("http://localhost:8080/" + code, code);
+
         repository.save(link);
 
-        return "http://localhost:8080/" + code;
+        return ResponseEntity.ok(urlResponse);
     }
 
     @GetMapping("/{code}")

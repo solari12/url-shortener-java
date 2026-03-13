@@ -1,7 +1,14 @@
 package com.example.shortlink.model;
 
-public class UrlRequest {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.URL;
 
+
+public class UrlRequest {
+    @NotBlank(message = "URL cannot be empty")
+    @URL(message = "Invalid URL format")
+    @Size(max = 2048)
     private String url;
 
     public String getUrl() {
