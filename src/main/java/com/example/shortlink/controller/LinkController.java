@@ -8,8 +8,10 @@ import com.example.shortlink.service.LinkService;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Optional;
@@ -63,7 +65,7 @@ public class LinkController {
         Links link = repository.findByShortCode(code);
 
         if (link == null) {
-            throw new RuntimeException("Short link not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Short link not found");
         }
 
         return new RedirectView(link.getOriginalUrl());
