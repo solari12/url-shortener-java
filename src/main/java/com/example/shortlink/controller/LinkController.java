@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.Optional;
+
 @RestController
 public class LinkController {
 
@@ -28,6 +30,18 @@ public class LinkController {
 
         if(!url.startsWith("http://") && !url.startsWith("https://")){
             url = "https://" + url;
+        }
+
+        Optional<Links> existing = repository.findByOriginalUrl(url);
+
+        if(existing.isPresent()){
+            Links link = existing.get();
+
+            UrlResponse response = new UrlResponse(
+                    "http://localhost:8080/" + link.getShortCode(),
+                    link.getShortCode()
+            );
+            return ResponseEntity.ok(response);
         }
 
         String code = service.generateCode();
